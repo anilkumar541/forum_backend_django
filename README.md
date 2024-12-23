@@ -3,4 +3,4 @@ The Online Forum Platform is a full-stack project built with Django and ReactJS 
 
 
 ## Description
-This repository contains the backend API built with Django and Django REST Framework (DRF) for ONline forum platform. It manages user authentication, API endpoints, and database operations.
+This repository contains the backend API built with Django and Django REST Framework (DRF) for Online forum platform. It manages user authentication, API endpoints, and database operations.
