@@ -6,15 +6,12 @@ from django.contrib.auth.models import User
 from .models import Question, Answer, Vote, Tag
 from .serializers import QuestionSerializer, AnswerSerializer, UserSerializer, TagSerailzer
 from rest_framework_simplejwt.tokens import RefreshToken
-from rest_framework.pagination import PageNumberPagination
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
+from rest_framework.filters import SearchFilter
+from rest_framework.generics import ListAPIView
+from .pagination import ForumPagination
 
-
-class QuestionPagination(PageNumberPagination):
-    page_size = 10  # Adjust the page size as needed
-    page_size_query_param = 'page_size'
-    max_page_size = 100
 
     
 def get_tokens_for_user(user):
@@ -69,19 +66,21 @@ def create_tag(request):
 
 @api_view(['GET'])
 def question_list(request):
-    if request.method == 'GET':
-        # filter question by tags
-        tags= request.query_params.get("tags", None)
-        if tags:
-            questions= Question.objects.filter(tags__tag__in= tags).order_by("-created_at")
-        else:    
-            questions = Question.objects.order_by("-created_at")
+    queryset= Question.objects.all()
 
-        # Apply pagination
-        paginator = QuestionPagination()    
-        paginated_questions= paginator.paginate_queryset(questions, request)
-        serializer = QuestionSerializer(paginated_questions, many=True)
-        return Response(serializer.data)
+    search_filter= SearchFilter()
+    search_fields= ["tags"]
+
+    queryset= search_filter.filter_queryset(request, queryset, view=None)
+    serializer = QuestionSerializer(queryset, many=True)
+    return Response(serializer.data)    
+
+class QuestionListView(ListAPIView):
+    queryset= Question.objects.all()
+    serializer_class= QuestionSerializer
+    pagination_class= ForumPagination
+    filter_backends= [SearchFilter]
+    search_fields= ["tags__tag"]
     
 
 @api_view(['POST'])
