@@ -1,3 +1,5 @@
 db.sqlite3
 venv
 env_jupyter/
+*cpython*
+*.cpython-*.pyc
