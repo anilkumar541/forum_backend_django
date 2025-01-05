@@ -1,6 +1,9 @@
 
 from pathlib import Path
 from datetime import timedelta
+from upstash_redis import Redis
+from decouple import config
+import os
 
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
@@ -11,12 +14,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.1/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-x4k_kbjv$8w^i###*g3_9-yjnmz67d)yw&a=t1$@8$5y7kv(ek'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -145,11 +148,14 @@ SIMPLE_JWT = {
 }
 
 
+
 CHANNEL_LAYERS = {
     'default': {
         'BACKEND': 'channels_redis.core.RedisChannelLayer',
         'CONFIG': {
-            "hosts": [('127.0.0.1', 6379)],
+            'hosts': [  
+                f"rediss://:{config('UPSTASH_REDIS_PASSWORD')}@flowing-bull-23435.upstash.io:6379",
+            ],
         },
     },
 }

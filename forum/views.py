@@ -76,7 +76,7 @@ def question_list(request):
     return Response(serializer.data)    
 
 class QuestionListView(ListAPIView):
-    queryset= Question.objects.all()
+    queryset= Question.objects.all().order_by("-created_at")
     serializer_class= QuestionSerializer
     pagination_class= ForumPagination
     filter_backends= [SearchFilter]
