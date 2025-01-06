@@ -12,7 +12,7 @@ class QuestionAdmin(admin.ModelAdmin):
     list_display= ["id", "title", "body", "author", "get_tags", "created_at", "updated_at"]
 
     def get_tags(self, obj):
-        print(obj)
+        # print(obj)
         return ", ".join([tag.tag for tag in obj.tags.all()])
 
     get_tags.short_description= "Tags"    
